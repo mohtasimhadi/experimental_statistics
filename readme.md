@@ -3,7 +3,9 @@
 ## Auburn University
 
 **Course Instructor:** Dr. Bertram Zinner ([zinnebe@auburn.edu](mailto:zinnebe@auburn.edu))
+
 **Teaching Assistant:** Hyelim Jung ([haj0019@auburn.edu](mailto:haj0019@auburn.eduhttps://))
+
 **Credit Hours:** 4
 
 ### Statistical Softwares
