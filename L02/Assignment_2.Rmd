@@ -1,0 +1,124 @@
+---
+title: "Assignment_2"
+author: "Mohtasim Hadi Rafi"
+date: "2024-05-23"
+output: html_document
+---
+
+# Problem 1
+
+Copy and paste the following R code into your R console.
+
+*binom.test(x=10, n=30, alternative=“less”)*
+
+Does it run? Now type the command into the R console as you see it instead of copying and pasting it into R. Now it should work. Why? Investigate this problem.
+
+## Solution:
+
+Let's copy paste the code snippet first and run it-
+
+```{r error=TRUE}
+binom.test(x=10, n=30, alternative=“less”)
+```
+
+Let's type it in this time and observe the result-
+
+```{R}
+binom.test(x=10, n=30, alternative="less")
+```
+
+The code snippet ran with no error. Now, if we look carefully we'll see the difference in the typed code snippet and in the copy pasted one- it's the *double quotes*. While copy pasted the code snippet it included “” which is not recognized by the R. But when I typed it in I used "" instead of “”, which is recognized by R.
+
+# Problem 2
+
+For this exercise you will be using a subset of data collected from pregnancies that occured between 1960 and 1967 among women in Oakland, California. First create a folder called STAT7000 and inside that folder create another folder called *assignment2*. Next change your working directory to the folder *assignment2* and execute the following lines of code:
+
+```{r error=TRUE}
+website='http://www.stat.berkeley.edu/~statlabs/data/babies23.data'
+download.file(website, destfile='babies', method='auto')
+```
+
+A description of the variables in the data file is found [here](http://www.stat.berkeley.edu/~statlabs/data/babies.readme)
+
+a.  Read the data into R and store it in the variable *babies*. Hint: Use the function *read.table()* or the Import Dataset button. The values in the data file are separated by 'white space', that is one or more spaces, tabs, newlines or carriage returns.
+
+b.  What are the names of columns 1, 7, 12, 13? Store columns 1, 7, 12, 13 in the variable *babies2*. Only include the data for which the values in column 7 are less than 999, the values in column 12 are less than 99, and the values in 13 are less than 999. Hints: use the function *subset()* and *names()*.
+
+c.  Change the variable names of *babies2* to "id", "baby.weight", "mother.height", "mother.weight".
+
+d.  Add another column to *babies2* called "mother.bmi" which records the body mass index of the mother. Calculate the body mass index by using the mother's weight in kilograms divided by the square of her height in meters. Hint: Note the units of the variables "mother.height", "mother.weight".
+
+e.  A person with a body mass index of 30 or more is classified as obese. How many mothers are obese?
+
+f.  Find the identification numbers of the ten mothers with the highest body mass index. Hint: use the function *order()*.
+
+## Solution:
+
+Since the [URL](http://www.stat.berkeley.edu/~statlabs/data/babies23.data) wasn't accessible I downloaded the *babies* and *babies.readme* from the file section of Canvas.
+
+### (a)
+
+Reading the data into R and storing it in the variable *babies* -
+
+```{r}
+babies <- read.table("babies", header = TRUE)
+```
+
+Let's have a glance at the *babies* dataframe-
+
+```{r}
+head(babies)
+```
+
+### (b)
+
+Names of columns 1, 7, 12, 13-
+
+```{r}
+names(babies[, c(1, 7, 12, 13)])
+```
+
+Column 7 and 13 have identical names and hence column 13 was renamed to *wt.1*.
+
+Storing columns 1, 7, 12, 13 in the variable *babies2*. Only including the data for which the values in column 7 are less than 999, the values in column 12 are less than 99, and the values in 13 are less than 999.
+
+```{r}
+babies2 <- subset(babies, wt < 999 & ht < 99 & wt.1 < 999, select = c(1, 7, 12, 13))
+head(babies2)
+```
+
+### (C)
+
+Changing the variable names of *babies2* to "id", "baby.weight", "mother.height", "mother.weight".
+
+```{r}
+names(babies2) <- c("id", "baby.weight", "mother.height", "mother.weight")
+names(babies2)
+```
+
+### (D)
+
+Adding another column to *babies2* called "mother.bmi" which records the body mass index of the mother. Calculating the body mass index by using the mother's weight in kilograms divided by the square of her height in meters.
+
+```{r}
+babies2$mother.bmi <- (babies2$mother.weight * 0.4536) / ((babies2$mother.height * 0.0254) ^ 2)
+head(babies2)
+```
+Since height was in inches, it was multiplied with 0.0254 to convert it to meter and the weight was multiplied with 0.4536 to convert it to kilogram from pound.
+
+### (E)
+
+Given that a person with a body mass index of 30 or more is classified as obese, the number of obese mother is calculated bellow-
+
+```{r}
+sum(babies2$mother.bmi >= 30)
+```
+
+### (F)
+
+Identification numbers of the ten mothers with the highest body mass index-
+
+```{r}
+top_bmi_indices <- order(babies2$mother.bmi, decreasing = TRUE)[1:10]
+babies2$id[top_bmi_indices]
+```
