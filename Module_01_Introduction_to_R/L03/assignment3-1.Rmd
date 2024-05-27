@@ -1,0 +1,35 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+**Problem 1.** Write a function that will calculate the value of the expression
+
+$$\frac{\hat{p}_1-\hat{p}_2}{\sqrt{\hat{p}(1-\hat{p})\left(\frac{1}{n_1}+\frac{1}{n_2}\right)}}$$ where$$ \hat{p} = \frac{x_1+x_2}{n_1+n_2},\quad \hat{p}_1=\frac{x_1}{n_1}, \quad \hat{p}_2=\frac{x_2}{n_2}, $$ for given values of $x_1$, $x_2$, $n_1$, and $n_2$.
+
+```{r}
+EvaluateStatistic <- function(x1, x2, n1, n2){
+  pHat <- (x1+x2)/(n1+n2)
+  p1 <- x1/n1
+  p2 <- x2/n2
+  (p1-p2)/sqrt(pHat*(1-pHat)*(1/n1)+(1/n2))
+}
+```
+
+What value do you get for $x_1= 12$, $x_2 = 15$, $n_1 = 30$, and $n_2 = 40$?
+
+```{r}
+EvaluateStatistic(x1 = 12, x2 = 15, n1 = 30, n2 = 40)
+```
+
+Square your result and compare with the value from the following R code:
+
+<code>prop.test(x=c(12, 15), n=c(30, 40), correct=FALSE)\$statistic</code>
+
+```{r}
+# square result of the function EvaluateStatistic
+EvaluateStatistic(x1 = 12, x2 = 15, n1 = 30, n2 = 40)^2
+prop.test(x=c(12, 15), n=c(30, 40), correct=FALSE)$statistic
+```
