@@ -1,0 +1,171 @@
+---
+titile: "Scripts, Functions and Loops"
+author: "Mohtasim Hadi Rafi"
+date: "24 May, 2024"
+output: "html_document"
+---
+
+# Scripts, Functions and Loops
+
+An R script is just a text file containing R statements. Storing all your calculations in such a file makes it easy to repeat your calculations with different values and also to document your work. I fyou need to do the same type of calculation repeatedly then it is useful to convert your script into a function. Once you figured out how to do a task in R then you can use a loop to do it many times.
+
+## Scripts
+
+In your first lesson, (see lecture notes "Introduction to R and R Studio") you learned how to evaluate a formula. Recall the following example.
+
+$$\frac{\hat{p}-p_{o}}{\sqrt{\frac{p_{o}(1-p_{o})}{n}}}$$
+
+where, $\hat{p} = \frac{x}{n}, x = 871, n = 1700, \text{and } p_{o} = 0.5$
+
+This formula was evaluated with the following lines of code.
+
+```{r}
+x <- 871
+n <- 1700
+pHat <- x/n
+p0 <- 0.5
+(pHat-p0)/sqrt(p0*(1-p0)/n)
+```
+
+This is an example of an R script. You could store these lines of R code in a text file and whenever you want to evaluate the formula.
+
+$$\frac{\hat{p}-p_{o}}{\sqrt{\frac{p_{o}(1-p_{o})}{n}}}$$
+
+for certain values of x, n and $p_{0}$, then you could just change these values in your text file and copy and paste the code into the R console.
+
+You don't even need to copy and paste; you could just run the script using the function source(). Suppose that you stored the R code in the file proportionStatistic.txt in your working directory. Then you could run the code as follows.
+
+```{r}
+source(file="proportionStatistic.txt", echo=TRUE)
+```
+
+## Functions
+
+Even better would be to define a function that will evaluate the formula for us. Here is a template for functions.
+
+```{r}
+functionName <- function(){
+  #insert script below
+}
+```
+
+Since functions do something their names should be verbs or verb phases. Let's call our function "calculateProportionStatistic". Then we could define our function as follows-
+
+```{r}
+calculateProportionStatistic <- function(x, n, p0){
+  pHat <- x/n
+  (pHat-p0)/sqrt(p0*(1-p0)/n)
+}
+```
+
+We can then evaluate the formula with a function call
+
+```{r}
+calculateProportionStatistic(871, 1700, 0.5)
+```
+
+or
+
+```{r}
+calculateProportionStatistic(x=871, n=1700, p0=0.5)
+```
+
+I prefer the second approach because it reminds me what these numbers stand for. Another advantage is that you can enter the arguments in any order. For example
+
+```{r}
+calculateProportionStatistic(p0=0.5, x=871, n=1700)
+```
+
+will give you the same result.
+
+After a while you may notice that the value of $p_{0}$ is often 0.5. In such a case it makes sense to define 0.5 as the default value.
+
+```{r}
+calculateProportionStatistic <- function(x, n, p0=0.5){
+     pHat <- x/n
+     (pHat-p0)/sqrt(p0*(1-p0)/n)
+}
+```
+
+Now you can evaluate the formula for x = 871, n = 1700 and $p_{o}$ = 0.5 with (x = 871, n = 1700)
+
+```{r}
+calculateProportionStatistic(x=871, n=1700)
+```
+
+and since you didn't specify the value of $p_{o}$, the function will use the default value of 0.5 for $p_{o}$.
+
+## Loops
+
+Suppose the total score for a student depends on the homework, three exams, and the final exam in the following way. Each exam counts 20%, the homework counts 10% and the final counts 30%. Furthermore, a student may replace one exam score with the score obtained in the final. In this example, we want to calculate the total score for each student.
+
+Consider a single student and suppose that the scores for this student are stored in the variables *exam1*, *exam2*, *exam3*, *homework*, *final* where each score is a value between 0 and 100. Then the total score for that student would be given by
+
+```{r error = TRUE}
+totalScore <- exam1*0.2+exam2*0.2+exam3*0.2+homework*0.1+final*0.3
+```
+
+except that we haven't taken into account that the student may want to replace one exam score with the final score. We could replace the lowest exam score by the final score as follows.
+
+```{r error = TRUE}
+totalScore.replaced <- totalScore - min(exam1, exam2, exam3)*0.2 + final*0.2
+```
+
+However, the student only wants to replace the lowest exam score with the final score if the student did better on the final. To accomplish this we could take the larger of the two values. Here is a function that will calculate the total score according to the stipulated rule.
+
+```{r}
+calculateScore <- function(exam1, exam2, exam3, homework, final){
+  totalScore <- exam1*0.2+exam2*0.2+exam3*0.2+homework*0.1+final*0.3
+  totalScore.replaced <- totalScore - min(exam1, exam2, exam3)*0.2+final*0.2
+  max(totalScore, totalScore.replaced)
+}
+```
+
+Now we want to do this calculation for each student. To repeat the same calculation we can use a so-called loop. Here is a template for a loop.
+
+```{r error = TRUE}
+for (i in some.vector){
+  \# i-th calculation goes here
+}
+```
+
+To be specific download the file [students.csv.](https://webhome.auburn.edu/~zinnebe/S7000Spring2021/scripts_functions_loops/students.csv) and read it into the variable students. Now we can create a new column in this data frame that contains the total score for each student as follows.
+
+```{r}
+students <- read.csv("students.csv")
+
+for (i in 1:15){
+  students$total[i] <- calculateScore(students[i, "exam1"], students[i, "exam2"], students[i, "exam3"], students[i, "homework"], students[i, "final"])
+}
+```
+
+```{r}
+head(students)
+```
+
+Just like in this case you can often find solutions that avoid doing a loop, resulting in code that executes much faster.
+
+```{r}
+students$total <- with(students, mapply(calculateScore, exam1, exam2, exam3, homework, final))
+head(students)
+```
+
+The function *mapply()* used here applies the function calculateScore() to the vectors exam1, exam2, exam3, homework, and final. Solutions involving loops are typically easier for beginners and speed may not be an issue.
+
+Besides the loop we will make use of another control structure, called an *if statement*. Here is a template for the if statement.
+
+```{r error = TRUE}
+if ( condition ){
+     # statement goes here; only executed if condition is TRUE
+}
+```
+
+For example
+
+```{r error = TRUE}
+if ( exam1 < final ) {
+  exam1 <- final
+}
+```
+
+will replace the value stored in the variable exam1 with the value stored in variable final if the value in exam1 is less than the value in final.
