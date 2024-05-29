@@ -14,7 +14,7 @@ EvaluateStatistic <- function(x1, x2, n1, n2){
   pHat <- (x1+x2)/(n1+n2)
   p1 <- x1/n1
   p2 <- x2/n2
-  (p1-p2)/sqrt(pHat*(1-pHat)*(1/n1)+(1/n2))
+  (p1-p2)/sqrt(pHat*(1-pHat)*((1/n1)+(1/n2)))
 }
 ```
 
@@ -33,3 +33,5 @@ Square your result and compare with the value from the following R code:
 EvaluateStatistic(x1 = 12, x2 = 15, n1 = 30, n2 = 40)^2
 prop.test(x=c(12, 15), n=c(30, 40), correct=FALSE)$statistic
 ```
+
+The values matches!

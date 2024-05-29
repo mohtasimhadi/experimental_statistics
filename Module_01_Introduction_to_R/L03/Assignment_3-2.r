@@ -1,4 +1,3 @@
-# setwd("~/Desktop")
 setwd("Module_01_Introduction_to_R/L03")
 sink(file = "bottles_of_beer.txt")
 

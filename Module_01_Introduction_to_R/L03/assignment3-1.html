@@ -1634,22 +1634,23 @@ where<span class="math display">\[ \hat{p} =
   pHat &lt;- (x1+x2)/(n1+n2)
   p1 &lt;- x1/n1
   p2 &lt;- x2/n2
-  (p1-p2)/sqrt(pHat*(1-pHat)*(1/n1)+(1/n2))
+  (p1-p2)/sqrt(pHat*(1-pHat)*((1/n1)+(1/n2)))
 }</code></pre>
 <p>What value do you get for <span class="math inline">\(x_1=
 12\)</span>, <span class="math inline">\(x_2 = 15\)</span>, <span class="math inline">\(n_1 = 30\)</span>, and <span class="math inline">\(n_2 = 40\)</span>?</p>
 <pre class="r"><code>EvaluateStatistic(x1 = 12, x2 = 15, n1 = 30, n2 = 40)</code></pre>
-<pre><code>## [1] 0.1378337</code></pre>
+<pre><code>## [1] 0.2126491</code></pre>
 <p>Square your result and compare with the value from the following R
 code:</p>
 <p><code>prop.test(x=c(12, 15), n=c(30, 40),
 correct=FALSE)$statistic</code></p>
 <pre class="r"><code># square result of the function EvaluateStatistic
 EvaluateStatistic(x1 = 12, x2 = 15, n1 = 30, n2 = 40)^2</code></pre>
-<pre><code>## [1] 0.01899814</code></pre>
+<pre><code>## [1] 0.04521964</code></pre>
 <pre class="r"><code>prop.test(x=c(12, 15), n=c(30, 40), correct=FALSE)$statistic</code></pre>
 <pre><code>##  X-squared 
 ## 0.04521964</code></pre>
+<p>The values matches!</p>
 
 
 
