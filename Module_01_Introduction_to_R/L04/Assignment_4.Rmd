@@ -1,0 +1,97 @@
+---
+title: "Assignment_4"
+author: "Mohtasim Hadi Rafi"
+date: "2024-06-03"
+output: html_document
+---
+
+# Problem
+
+The result of a coin toss is heads (H) or tails (T). Estimate the answers to the two questions below by simulating coin tosses.
+
+## (a) Estimate the chance that you get heads each time in 7 coin tosses?
+
+**Hint:** You can simulate 7 coin tosses and check if they are all heads as follows:
+
+`toss7 <- sample(c("H", "T"), size=7, replace=TRUE)`
+
+`word7 <- paste(toss7, collapse="")`
+
+`word7 == "HHHHHHH" # check if all 7 tosses were heads (H)`
+
+**Remark:** The exact answer is 1/2\^7 = 0.0078125.
+
+### Solution:
+
+First we define a function to simulate the coin tosses.
+
+```{r}
+# Set seed for reproducibility
+set.seed(123)
+
+coin_toss <- function(num_tosses) {
+  tosses <- sample(c("H", "T"), size = num_tosses, replace = TRUE)
+  return(paste(tosses, collapse = ""))
+}
+```
+
+Now we'll use this function to repeat the simulation a large number of times and count the number of times the desired event occurs.
+
+```{r}
+num_simulations <- 1000000
+num_heads <- 0
+
+for (i in 1:num_simulations) {
+  result <- coin_toss(7)
+  if (result == "HHHHHHH") {
+    num_heads <- num_heads + 1
+  }
+}
+```
+
+Finally, we'll estimate the probability by dividing the count of desired events by the total number of simulations.
+
+```{r}
+probability_a <- num_heads / num_simulations
+cat("Estimated probability:", probability_a, "\n")
+```
+
+## (b) Estimate the chance that in a sequence of 100 coin tosses there will be a sequence of 7 consecutive tosses that are all heads (H).
+
+**Hint:** Here is a function that simulates 100 coin tosses and checks if it contains a sequence of 7 consecutive tosses that are heads.
+
+```{r, error=TRUE}
+coin100 <- function(){
+
+    toss100 <- sample(c("H", "T"), size=100, replace=TRUE)
+
+    word100 <- paste(toss100, collapse="")
+
+    pattern <- "HHHHHHH"
+
+    grepl(pattern, word100)
+
+}
+```
+
+coin100() \# does this experiment one time
+
+**Remark:** The answer can be calculated using the Theory of Markov Chains. It is 0.3175204.
+
+### Solution:
+
+We can use the same function *coin_toss* to estimate the chance of getting a sequence of 7 consecutive heads in 100 coin tosses.
+
+```{r}
+num_sequences <- 0
+
+for (i in 1:num_simulations) {
+  result <- coin_toss(100)
+  if (grepl("HHHHHHH", result)) {
+    num_sequences <- num_sequences + 1
+  }
+}
+
+probability_b <- num_sequences / num_simulations
+cat("Estimated probability:", probability_b, "\n")
+```
