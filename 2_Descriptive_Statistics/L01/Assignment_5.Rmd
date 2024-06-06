@@ -1,0 +1,143 @@
+---
+title: "Assignment_5"
+author: "Mohtasim Hadi Rafi"
+date: "2024-06-06"
+output: html_document
+---
+
+# Problem 1
+
+Is there grade inflation at Auburn University? The distribution of all grades earned by undergraduates for selected years and terms between 1924-2011 is stored in the file [grades.csv](https://auburn.instructure.com/courses/1574122/files/242631364?wrap=1 "grades.csv")
+
+Calculate the average grade for each year, starting from 1976, and plot the average grade against the year. Describe the pattern you see. What are your conclusions? Change the range of the vertical axes to the interval (0, 4). Does this change affect your conclusions?
+
+## Solution
+
+First we import the libraries and read the csv file and make a subset that includes only years after 1976 and onward.
+
+```{r}
+data <- read.csv("grades-1.csv")
+subset_data <- data[data$year >= 1976, ]
+head(subset_data)
+```
+
+Now we can assign GPA and calculate the average grades for each year and store the result.
+
+```{r}
+subset_data[subset_data == "NA"] <- 0
+subset_data$avg_cgpa <- (subset_data$A * 4 + subset_data$B * 3 + subset_data$C * 2 + subset_data$D) / (subset_data$A + subset_data$B + subset_data$C + subset_data$D + subset_data$other + subset_data$failing)
+head(subset_data)
+```
+
+Now we can plot the the average grade against year.
+
+```{r}
+plot(subset_data$year, subset_data$avg_cgpa, type = "l", xlab = "Year", ylab = "Average Grade", main = "Average Grade Over Years")
+```
+
+From here, we can see that The average grade has a decreasing trend from 1976 to 1981 but then it starts to increase until 1999. Then the average drops dramatically and again start rising. Overall the average grades increased as it reached 2010.
+
+Let's change the range of the vertical axes to the interval (0, 4).
+
+```{r}
+ylim <- c(0, 4)
+plot(subset_data$year, subset_data$avg_cgpa, type = "l", xlab = "Year", ylab = "Average Grade", main = "Average Grade Over Years", ylim = ylim)
+```
+
+The plot is now more like a straight line since it is flattened and plotted against 0 to 4. Previously we could have a better look at the trends which is now zoomed out and hard to observe.
+
+# Problem 2
+
+For this exercise you will be using a subset of data collected from pregnancies that occurred between 1960 and 1967 among women in Oakland, California. You can read the data into R as follows:
+
+`website='<http://www.stat.berkeley.edu/~statlabs/data/babies23.data>'`
+
+`babies <- read.table(website, header=TRUE)`
+
+A description of the variables in the data file is found here: <http://www.stat.berkeley.edu/~statlabs/data/babies.readmeLinks> to an external site.
+
+1.  Create a scatterplot of birth weight vs gestation length. Indicate the units of measurements in your plot. Hints: use the function plot() to create the scatterplot; use the arguments xlab and ylab in the function plot() to change the labels of the axes, e.g., ylab = 'weight (ounces)'.
+2.  Create a scatterplot of birth weight vs gestation length where you distinguish different levels of the factor smoke by a different printing character. Add a legend to your plot. Hints: use the argument pch=as.numeric(factor(smoke)) in plot() and then use the function legend()
+3.  Create a scatterplot of birth weight in ounces vs gestation length in days where you distinguish different levels of the factor smoke by a different color. Add a legend to your plot. Hints: Use pch=20 and col='rainbow'(5)[as.numeric(factor(smoke))]
+4.  Create side-by-side boxplots to compare the distribution of birth weights for different levels of the factor smoke. Compare the distribution of gestation time for mothers who never smoked with those who smoke now using density plots. Hints: use the functions density() and lines()
+
+## Solution
+
+Let's read the data first.
+
+```{r}
+website='http://www.stat.berkeley.edu/~statlabs/data/babies23.data'
+babies <- read.table(website, header=TRUE)
+head(babies)
+```
+
+
+1. Scatterplot of birth weight vs gestation length:
+
+```{r}
+plot(babies$gestation, data$wt,
+     xlab = "Gestation Length (days)", 
+     ylab = "Birth Weight (ounces)",
+     main = "Birth Weight vs Gestation Length Scatterplot")
+```
+2. Scatterplot of birth weight vs gestation length where you distinguish different levels of the factor smoke by a different printing character.
+
+```{r}
+babies$smoke_factor <- as.numeric(factor(babies$smoke))
+
+colors <- c("red", "blue", "green", "orange", "purple")
+
+plot(babies$gestation, babies$wt,
+     xlab = "Gestation Length (days)", 
+     ylab = "Birth Weight (ounces)",
+     main = "Birth Weight vs Gestation Length Scatterplot",
+     pch = babies$smoke_factor,
+     col = colors[babies$smoke_factor])
+
+legend("topright", legend = levels(factor(babies$smoke)),
+       title = "Smoking Status", pch = 1:length(levels(factor(babies$smoke))), col = colors)
+
+```
+
+3. Scatterplot with different colors for different levels of 'smoke'
+
+```{r}
+plot(babies$gestation, babies$wt,
+     xlab = "Gestation Length (days)", 
+     ylab = "Birth Weight (ounces)",
+     main = "Birth Weight vs Gestation Length Scatterplot",
+     pch = 20,
+     col = rainbow(5)[as.numeric(factor(babies$smoke))])
+
+legend("topright", legend = levels(factor(babies$smoke)),
+       title = "Smoking Status", col = rainbow(5), pch = 20)
+```
+4. Side-by-side boxplots for birth weights
+
+```{r}
+never_smoked <- babies[babies$smoke == 0, ]
+smokes_now <- babies[babies$smoke == 1, ]
+
+par(mfrow = c(1, 2))  # Set the layout to 1 row and 2 columns
+
+dens_never <- density(never_smoked$wt)
+plot(dens_never, main = "Density Plot of Birth Weights (Never Smoked)", 
+     xlab = "Birth Weight (ounces)", ylab = "Density")
+lines(dens_never, col = "blue")
+
+dens_now <- density(smokes_now$wt)
+plot(dens_now, main = "Density Plot of Birth Weights (Smokes Now)", 
+     xlab = "Birth Weight (ounces)", ylab = "Density")
+lines(dens_now, col = "red")
+
+par(mfrow = c(1, 1))  # Reset layout to a single plot
+
+dens_gestation_never <- density(never_smoked$gestation)
+plot(dens_gestation_never, main = "Density Plot of Gestation Time (Never Smoked)", 
+     xlab = "Gestation Length (days)", ylab = "Density")
+lines(dens_gestation_never, col = "blue")
+
+dens_gestation_now <- density(smokes_now$gestation)
+lines(dens_gestation_now, col = "red")
+
+```
