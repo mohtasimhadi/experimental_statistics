@@ -1,0 +1,111 @@
+---
+title: "Assignment_7"
+author: "Mohtasim Hadi Rafi"
+date: "2024-06-12"
+output: html_document
+---
+
+# Problem
+
+For this exercise you will be using a subset of data collected from pregnancies that occured between 1960 and 1967 among women in Oakland, California. You can store the data into the variable babies with the following two lines of code
+
+`website='http://www.stat.berkeley.edu/~statlabs/data/babies23.data'` `'babies <- read.table(website, header=T)`
+
+A description of the variables in the data file is found [here](http://www.stat.berkeley.edu/~statlabs/data/babies.readme)
+
+Install ggplot2 by typing the following into the R console: `install.packages("ggplot2")`
+
+Each of the following tasks can be done by using just one line of R code.
+
+## 1. Create a scatterplot of birth weight in ounces vs gestation length in days. Do you see something strange? Choose an appropriate subset of the variable gestation using the function subset(). Hint: `data = subset(babies, gestation != 999)`
+
+### Solution
+
+First we download the subset into the variable babies with the given code.
+
+```{r}
+website='http://www.stat.berkeley.edu/~statlabs/data/babies23.data'
+babies <- read.table(website, header=T)
+```
+
+Now we draw the scatterplot of birthweight in ounces vs gestationn length in days-
+
+```{r}
+library(ggplot2)
+ggplot(data = babies, aes(x = gestation, y = wt)) + geom_point() + labs(x = "Gestation Length (days)", y = "Birth Weight (ounces)", title = "Scatterplot of Birth Weight vs Gestation Length")
+```
+
+
+It's strange that most birthweights are scattered around day 250 but there are some scatters on day 1000 as well. Let's create the appropreate subset-
+
+```{r}
+ggplot(subset(babies, gestation != 999), aes(x = gestation, y = wt)) + geom_point() + labs(x = "Gestation Length (days)", y = "Birth Weight (ounces)", title = "Scatterplot of Birth Weight vs Gestation Length")
+```
+
+
+## 2. Since there are so many points in the scatterplot (called overplotting), it helps to change the transparency level. Try a few levels for alpha (any number between 0 and 1) and use the one you like best. Also add a smoother to the plot.
+
+### Solution:
+
+Let's add transparency to the points and a smoother to the plot:
+
+```{r}
+ggplot(subset(babies, gestation != 999), aes(x = gestation, y = wt)) + geom_point(alpha = 0.3) + geom_smooth(method = "loess", color = "red") +  labs(x = "Gestation Length (days)", y = "Birth Weight (ounces)", title = "Scatterplot of Birth Weight vs Gestation Length")
+
+```
+
+## 3. Create a scatterplot of birth weight in ounces vs gestation length in days where you distinguish different levels of the factor smoke by a different printing character. Hint: the variable smoke is coded as a numeric variable and not as a factor; you can use the function factor() to change the variable smoke into a factor.
+
+### Solution
+To create a scatterplot where different levels of the factor "smoke" are distinguished by different plotting characters, we'll first convert the "smoke" variable into a factor and then use it to specify the shape aesthetic in the ggplot() function.
+
+```{r}
+babies$smoke <- factor(babies$smoke)
+
+ggplot(subset(babies, gestation != 999), aes(x = gestation, y = wt, shape = smoke)) + geom_point(alpha = 0.3) +  labs(x = "Gestation Length (days)", y = "Birth Weight (ounces)", title = "Scatterplot of Birth Weight vs Gestation Length") + scale_shape_manual(values = c(1, 2, 3, 4, 5))
+
+```
+
+## 4. Create a scatterplot of birth weight in ounces vs gestation length in days where you distinguish different levels of the factor smoke by a different color.
+
+### Solution
+
+```{r}
+ggplot(subset(babies, gestation != 999), aes(x = gestation, y = wt, color = smoke)) +
+  geom_point(alpha = 0.3) + labs(x = "Gestation Length (days)", y = "Birth Weight (ounces)", title = "Scatterplot of Birth Weight vs Gestation Length") + scale_color_manual(values = c("deepskyblue3", "darkslategrey", "darkolivegreen", "azure3", "darkgray"))
+```
+
+## 5. Create side-by-side boxplots to compare the distribution of birth weights for different levels of the factor smoke.
+
+### Solution
+
+```{r}
+ggplot(subset(babies, gestation != 999), aes(x = smoke, y = wt, fill = smoke)) + geom_boxplot() + labs(x = "Smoke", y = "Birth Weight (ounces)", title = "Comparison of Birth Weights for Different Levels of Smoke") + scale_fill_manual(values = c("deepskyblue3", "darkslategrey", "darkolivegreen", "azure3", "darkgray"))
+```
+
+## 6. Compare the distribution of gestation time for the different values of the variable smoke using frequency histograms and faceting.
+
+### Solution
+To compare the distribution of gestation time for different values of the variable "smoke" using frequency histograms and faceting, you can use the geom_histogram() function in ggplot2 along with faceting using the facet_wrap() function.
+
+```{r}
+ggplot(subset(babies, gestation != 999), aes(x = gestation)) + geom_histogram(binwidth = 10, fill = "darkseagreen2", color = "black") +  labs(x = "Gestation Time (days)", y = "Frequency",       title = "Comparison of Gestation Time for Different Levels of Smoke") +  facet_wrap(~ smoke, scales = "free")
+```
+
+## 7. Compare the distribution of gestation time for the different values of the variable smoke using density curves and faceting.
+
+### Solution
+
+```{r}
+ggplot(subset(babies, gestation != 999), aes(x = gestation, fill = smoke, color=smoke)) + geom_density(alpha = 0.5) + labs(x = "Gestation Time (days)", y = "Density", title = "Comparison of Gestation Time for Different Levels of Smoke") + scale_fill_manual(values = c("deepskyblue3", "darkslategrey", "darkolivegreen", "azure3", "darkgray")) + scale_color_manual(values = c("deepskyblue3", "darkslategrey", "darkolivegreen", "azure3", "darkgray")) +  facet_wrap(~ smoke, scales = "free")
+```
+
+
+## 8. Compare the distribution of gestation time for mothers who never smoked with those who smoke now, using density curves on the same plot (no faceting). Hint: select only those cases in the data set where smoke is 0 or 1; 'data=subset(babies, gestation != 999 & (smoke == 0 | smoke == 1)'**
+
+### Solution
+
+```{r}
+ggplot(subset(babies, gestation != 999 & (smoke == 0 | smoke == 1)), aes(x = gestation, fill = smoke, color = smoke)) + geom_density(alpha = 0.5) + labs(x = "Gestation Time (days)", y = "Density", title = "Comparison of Gestation Time for Non-smokers vs Smokers") + scale_fill_manual(values = c("darkolivegreen", "azure"), labels = c("Never Smoked", "Smokes Now")) + scale_color_manual(values = c("darkolivegreen", "azure"), labels = c("Never Smoked", "Smokes Now"))
+
+```
