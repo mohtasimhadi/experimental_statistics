@@ -71,8 +71,7 @@ babies <- read.table(website, header=TRUE)
 head(babies)
 ```
 
-
-1. Scatterplot of birth weight vs gestation length:
+1.  Scatterplot of birth weight vs gestation length:
 
 ```{r}
 plot(babies$gestation, data$wt,
@@ -80,14 +79,15 @@ plot(babies$gestation, data$wt,
      ylab = "Birth Weight (ounces)",
      main = "Birth Weight vs Gestation Length Scatterplot")
 ```
-2. Scatterplot of birth weight vs gestation length where you distinguish different levels of the factor smoke by a different printing character.
+
+2.  Scatterplot of birth weight vs gestation length where you distinguish different levels of the factor smoke by a different printing character.
 
 ```{r}
 babies$smoke_factor <- as.numeric(factor(babies$smoke))
 
 colors <- c("red", "blue", "green", "orange", "purple")
 
-plot(babies$gestation, babies$wt,
+plot(babies$gestation, babies$bwt,
      xlab = "Gestation Length (days)", 
      ylab = "Birth Weight (ounces)",
      main = "Birth Weight vs Gestation Length Scatterplot",
@@ -99,10 +99,10 @@ legend("topright", legend = levels(factor(babies$smoke)),
 
 ```
 
-3. Scatterplot with different colors for different levels of 'smoke'
+3.  Scatterplot with different colors for different levels of 'smoke'
 
 ```{r}
-plot(babies$gestation, babies$wt,
+plot(babies$gestation, babies$bwt,
      xlab = "Gestation Length (days)", 
      ylab = "Birth Weight (ounces)",
      main = "Birth Weight vs Gestation Length Scatterplot",
@@ -112,25 +112,22 @@ plot(babies$gestation, babies$wt,
 legend("topright", legend = levels(factor(babies$smoke)),
        title = "Smoking Status", col = rainbow(5), pch = 20)
 ```
-4. Side-by-side boxplots for birth weights
+
+4.  Side-by-side boxplots for birth weights
 
 ```{r}
+par(mfrow = c(1, 1))
+
+boxplot(wt ~ smoke, data = babies,
+        xlab = 'Smoke', ylab = 'Birth Weight (Ounces)',
+        main = 'Comparison of Birth Weights by Smoke Level')
+
+```
+```{r}
+par(mfrow = c(1, 1))
+
 never_smoked <- babies[babies$smoke == 0, ]
 smokes_now <- babies[babies$smoke == 1, ]
-
-par(mfrow = c(1, 2))  # Set the layout to 1 row and 2 columns
-
-dens_never <- density(never_smoked$wt)
-plot(dens_never, main = "Density Plot of Birth Weights (Never Smoked)", 
-     xlab = "Birth Weight (ounces)", ylab = "Density")
-lines(dens_never, col = "blue")
-
-dens_now <- density(smokes_now$wt)
-plot(dens_now, main = "Density Plot of Birth Weights (Smokes Now)", 
-     xlab = "Birth Weight (ounces)", ylab = "Density")
-lines(dens_now, col = "red")
-
-par(mfrow = c(1, 1))  # Reset layout to a single plot
 
 dens_gestation_never <- density(never_smoked$gestation)
 plot(dens_gestation_never, main = "Density Plot of Gestation Time (Never Smoked)", 
@@ -139,5 +136,4 @@ lines(dens_gestation_never, col = "blue")
 
 dens_gestation_now <- density(smokes_now$gestation)
 lines(dens_gestation_now, col = "red")
-
 ```

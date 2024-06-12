@@ -1,0 +1,61 @@
+# Description of Data by Numerical Measures
+
+In this lesson you will learn how to describe data with numbers. The two most important summaries of data for a quantitative variable are those for the center and the spread. Appropriate choices for these measures are discussed here as well as the effects of a linear transformation of the data on these measures. This lesson also explains the so called five-number summary and its graphical representation, the boxplot. Finally, the percentile is explained as a measure of relative standing.
+
+## Measures of Center
+
+In a class of 15 students, the scores of exam 1 are:
+
+55, 60, 65, 68, 72, 64, 83, 63, 66, 72, 95, 62, 83, 58, 72.
+
+How would you describe the center of these numbers?
+
+A typical approach is to describe the center of data by their average. Except that in statistics we use the word mean rather than average. We calculate the sample mean $\bar{x}$ by the formula
+
+$$
+\bar{x} = \frac{1}{n}\sum_{i=1}^{n}{x_i}
+$$
+
+where $n$ denotes the sample size, here $n$ = 15, and $x_i$ denotes the i-th score.
+
+Another approach for describing the center is to calculate the "middle number," that is, we sort the data and then pick the number in the middle. In statistics, we use the term *median* instead of "middle number."
+
+To find the middle number, we count the number of scores, add 1, and divide by 2. In this example there are 15 scores and therefore the score in the middle, the sample median, is the (15+1)/2 = 8th score.
+
+Suppose for example that there are only $n = 4$ scores. In that case, $(n+1)/2 = 2;.5$ that is, there is no middle number. What do we do when $n$ is even?
+
+If there is no middle number then we have to average the two middle numbers. So the sample median is the middle number, provided there is one, or the average of the two middle numbers.
+
+Care has to be taken when interpreting a measure of center. Average life expectancy, for example, has substantially increased during the last two decades in the United States. This poses problems for the long term financing of Social Security. Based on this information one might find an increase of minimum retirement age to be the obvious solution.
+
+It turns out, however, that life expectancy has increased much more for wealthy people than for the poor. Should the poor, who depend on Social Security, have to work longer because the wealthy, who don't need it, live longer?
+
+More generally, just because some procedure or decision is best in the typical case, does not necessarily make it the best choice in a "particular" case.
+
+## Measures of Spread
+How spread apart is the data? One idea for measuring the spread of the data is to calculate the average distance from its center. For the data:
+
+$55, 58, 60, 62, 63, 64, 65, 66, 68, 72, 72, 72, 83, 83, 95$
+
+the center, as measured by the sample mean, is 69.2. So we subtract from each score 69.2 and obtain
+
+$-14.2, -11.2, -9.2, -7.2, -6.2, -5.2, -4.2, -3.2, -1.2, 2.8, 2.8, 2.8, 13.8, 13.8, 25.8.$
+
+The distances are then the absolute values of these differences, that is, the distances are
+
+$14.2, 11.2, 9.2, 7.2, 6.2, 5.2, 4.2, 3.2, 1.2, 2.8, 2.8, 2.8, 13.8, 13.8, 25.8.$
+
+The average distance of the data from the mean is therefore the average of these distances, which turns out to be 8.24.
+
+We can describe this measure of spread with the following formula:
+
+$$
+s = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}({x_{i}-\bar{x}})^2}
+$$
+
+In the example above, the squared deviations are
+
+$201.64, 125.44, 84.64, 51.84, 38.44, 27.04, 17.64, 10.24, 1.44, 7.84, 7.84, 7.84, 190.44, 190.44, 665.64.$
+
+The sum of all these numbers is 1628.4. Dividing this number by n-1=14, we obtain the so called sample variance $s^2$ = 10.78491.
+
